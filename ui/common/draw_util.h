@@ -1,0 +1,277 @@
+/*
+*
+*    This program is free software; you can redistribute it and/or modify it
+*    under the terms of the GNU General Public License as published by the
+*    Free Software Foundation; either version 2 of the License, or (at
+*    your option) any later version.
+*
+*    This program is distributed in the hope that it will be useful, but
+*    WITHOUT ANY WARRANTY; without even the implied warranty of
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*    General Public License for more details.
+*
+*    You should have received a copy of the GNU General Public License
+*    along with this program; if not, write to the Free Software Foundation,
+*    Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*
+*    In addition, as a special exception, the author gives permission to
+*    link the code of this program with the Half-Life Game Engine ("HL
+*    Engine") and Modified Game Libraries ("MODs") developed by Valve,
+*    L.L.C ("Valve").  You must obey the GNU General Public License in all
+*    respects for all of the code used other than the HL Engine and MODs
+*    from Valve.  If you modify this file, you may extend this exception
+*    to your version of the file, but you are not obligated to do so.  If
+*    you do not wish to do so, delete this exception statement from your
+*    version.
+*
+*/
+#pragma once
+#include <cl_util.h>
+#include <stddef.h>
+#include "cs_vgui2.h"
+#ifndef DRAW_UTIL_H
+#define DRAW_UTIL_H
+// Drawing primitives
+
+#define DHN_DRAWZERO 1
+#define DHN_2DIGITS  2
+#define DHN_3DIGITS  4
+
+extern int g_codepage;
+extern qboolean g_accept_utf8;
+
+extern cvar_t *con_charset;
+extern cvar_t *cl_charset;
+
+// 0 - draw HUD strings with the original CS glyphs, falling back to the VGUI2
+//     font only for characters that font has no glyph for.
+// 1 - always use the VGUI2 font.
+extern cvar_t *cl_hud_font;
+
+
+int Con_UtfProcessChar( int in );
+int Con_UtfProcessCharForce( int in );
+
+// Steam GoldSrc's narrow HUD font expects a legacy single-byte string. Keep
+// server-supplied CP1251/ANSI text intact, but convert valid UTF-8 before it is
+// passed to the engine's console-font drawing functions.
+const char *CS16_LegacyHudText( const char *source, char *destination, size_t destinationSize );
+bool CS16_HudTextNeedsUnicode( const char *text );
+
+class DrawUtils
+{
+public:
+	static int DrawHudNumber(int x, int y, int iFlags, int iNumber,
+						 int r, int g, int b );
+
+	static int DrawHudNumber2( int x, int y, bool DrawZero, int iDigits, int iNumber,
+						   int r, int g, int b);
+
+	static int DrawHudNumber2( int x, int y, int iNumber,
+						   int r, int g, int b);
+
+
+	//θα χρησιμοποιηθεί για τη Ζωή και την Ασπίδα. Θα παίρνει τη συντεταγμένη Χ, θα ζωγραφίζει τον αριθμό ψηφίο-ψηφίο από τα 
+	// αριστερά προς τα δεξιά (όσα ψηφία κι αν έχει) και θα επιστρέφει το νέο Χ, ώστε ακριβώς δίπλα να βάλουμε το εικονίδιο 
+	// (του σταυρού ή της ασπίδας).
+	static int DrawHudNumberLeft(int x, int y, int iNumber, int r, int g, int b);
+
+
+	//θα χρησιμοποιηθεί για τα Πυρομαχικά. Θα παίρνει τη συντεταγμένη Χ (από την κάθετο | ή το εικονίδιο), θα "χτίζει" τον 
+	// αριθμό από τα δεξιά προς τα αριστερά, αφήνοντας ακριβώς όσο χώρο χρειάζεται (είτε είναι 1 ψηφίο είτε 4), αποφεύγοντας 
+	// έτσι τα τεράστια κενά ή τα "σπασίματα".
+	static int DrawHudNumberRight(int x, int y, int iNumber, int r, int g, int b);
+
+
+	static int DrawHudString(int x, int y, int iMaxX, const char *szString,
+						 int r, int g, int b, float scale = 0.0f, bool drawing = false );
+
+	static int DrawHudStringReverse( int xpos, int ypos, int iMinX, const char *szString,
+								 int r, int g, int b, float scale = 0.0f, bool drawing = false );
+
+	static inline int DrawHudNumberString( int xpos, int ypos, int iMinX, int iNumber,
+								int r, int g, int b, float scale = 0.0f )
+	{
+		char szString[16];
+		snprintf( szString, sizeof(szString), "%d", iNumber );
+		return DrawHudStringReverse( xpos, ypos, iMinX, szString, r, g, b, scale );
+	}
+
+	static int HudStringLen( const char *szIt, float scale = 1 );
+
+	// Line height of the font HUD strings are actually drawn with, so layouts
+	// stay in step with cl_hud_font.
+	static inline int HudTextTall()
+	{
+		if ( !cl_hud_font || cl_hud_font->value == 0.0f )
+		{
+			const int tall = CS16VGUI2_GetHudFontTall();
+			if ( tall > 0 )
+				return tall;
+		}
+
+		return gHUD.GetCharHeight();
+	}
+
+	static inline int HudCharacterWidth( int number, bool forceUnicode = false )
+	{
+		if ( forceUnicode || number >= 0x80 )
+		{
+			char text[2] = { (char)number, 0 };
+			int wide = 0, tall = 0;
+			if ( CS16VGUI2_GetHudStringSize( text, &wide, &tall ) )
+				return wide;
+		}
+		return gHUD.GetCharWidth( (unsigned char)number );
+	}
+
+	// legacy shit came with Valve
+	static inline int GetNumWidth(int iNumber, int iFlags)
+	{
+		if ( iFlags & ( DHN_3DIGITS ) )
+			return 3;
+
+		if ( iFlags & ( DHN_2DIGITS ) )
+			return 2;
+
+		if ( iNumber <= 0 )
+			return iFlags & DHN_DRAWZERO ? 1 : 0;
+
+		if ( iNumber < 10 )
+			return 1;
+
+		if ( iNumber < 100 )
+			return 2;
+
+		return 3;
+	}
+
+	static inline int DrawConsoleString(int x, int y, const char *string)
+	{
+		char converted[4096];
+		string = CS16_LegacyHudText( string, converted, sizeof(converted) );
+		if ( CS16_HudTextNeedsUnicode( string ) )
+		{
+			const int wide = CS16VGUI2_DrawHudString( x, y, string,
+				(int)(color[0] * 255), (int)(color[1] * 255),
+				(int)(color[2] * 255), 255 );
+			if ( wide >= 0 )
+				return x + wide;
+		}
+
+		if ( gHUD.hud_textmode->value )
+		{
+			int ret  = DrawHudString( x, y, 9999, (char *)string, color[0] * 255, color[1] * 255, color[2] * 255 );
+			color[0] = color[1] = color[2] = 1.0f;
+			return ret;
+		}
+		else
+			return gEngfuncs.pfnDrawConsoleString( x, y, (char *)string );
+	}
+
+	static inline void SetConsoleTextColor( float r, float g, float b )
+	{
+		color[0] = r, color[1] = g, color[2] = b;
+		if ( !gHUD.hud_textmode->value )
+			gEngfuncs.pfnDrawSetTextColor( r, g, b );
+	}
+
+	static inline void SetConsoleTextColor( unsigned char r, unsigned char g, unsigned char b )
+	{
+		color[0] = r / 255.0f, color[1] = g / 255.0f, color[2] = b / 255.0f;
+		if ( !gHUD.hud_textmode->value )
+			gEngfuncs.pfnDrawSetTextColor( r / 255.0f, g / 255.0f, b / 255.0f );
+	}
+
+	static inline int ConsoleStringLen(  const char *szIt )
+	{
+		char converted[4096];
+		szIt = CS16_LegacyHudText( szIt, converted, sizeof(converted) );
+		if ( CS16_HudTextNeedsUnicode( szIt ) )
+		{
+			int wide = 0, tall = 0;
+			if ( CS16VGUI2_GetHudStringSize( szIt, &wide, &tall ) )
+				return wide;
+		}
+
+		if ( gHUD.hud_textmode->value )
+		{
+			return HudStringLen( (char *)szIt );
+		}
+		else
+		{
+			int _width;
+			int _height;
+
+			gEngfuncs.pfnDrawConsoleStringLen( szIt, &_width, &_height );
+			return _width;
+		}
+	}
+
+	static inline void ConsoleStringSize( const char *szIt, int *width, int *height )
+	{
+		char converted[4096];
+		szIt = CS16_LegacyHudText( szIt, converted, sizeof(converted) );
+		if ( CS16_HudTextNeedsUnicode( szIt ) &&
+			CS16VGUI2_GetHudStringSize( szIt, width, height ) )
+			return;
+
+		if ( gHUD.hud_textmode->value )
+			*height = 13, *width = HudStringLen( (char *)szIt );
+		else
+			gEngfuncs.pfnDrawConsoleStringLen( szIt, width, height );
+	}
+
+	static inline int TextMessageDrawChar( int x, int y, int number, int r, int g, int b,
+		float scale = 0.0f, bool forceUnicode = false, int alpha = 255 )
+	{
+		if ( forceUnicode || number >= 0x80 )
+		{
+			char text[2] = { (char)number, 0 };
+			const int wide = CS16VGUI2_DrawHudString( x, y, text, r, g, b, alpha );
+			if ( wide >= 0 )
+				return wide;
+		}
+		return gEngfuncs.pfnDrawCharacter( x, y, number, r, g, b );
+	}
+
+	static inline void UnpackRGB( int &r, int &g, int &b, const unsigned long ulRGB )
+	{
+		r = (ulRGB & 0xFF0000) >>16;
+		g = (ulRGB & 0xFF00) >> 8;
+		b = ulRGB & 0xFF;
+	}
+
+	static inline void ScaleColors( int &r, int &g, int &b, const int a )
+	{
+		r *= a / 255.0f;
+		g *= a / 255.0f;
+		b *= a / 255.0f;
+	}
+
+	static inline void DrawRectangle( int x, int y, int wide, int tall,
+						   int r = 0, int g = 0, int b = 0, int a = 153,
+						   bool drawStroke = true )
+	{
+		FillRGBABlend( x, y, wide, tall, r, g, b, a );
+		if ( drawStroke )
+		{
+			// TODO: remove this hardcoded hardcore
+			FillRGBA( x + 1,        y,            wide - 1, 1,        255, 140, 0, 255 );
+			FillRGBA( x,            y,            1,        tall - 1, 255, 140, 0, 255 );
+			FillRGBA( x + wide - 1, y + 1,        1,        tall - 1, 255, 140, 0, 255 );
+			FillRGBA( x,            y + tall - 1, wide - 1, 1,        255, 140, 0, 255 );
+		}
+	}
+
+	static void Draw2DQuad( float x1, float y1, float x2, float y2 );
+	static void DrawStretchPic( float x, float y, float w, float h,
+								float s1 = 0, float t1 = 0, float s2 = 1, float t2 = 1);
+
+
+private:
+	// console string color
+	static float color[3];
+};
+
+#endif // DRAW_UTIL_H
