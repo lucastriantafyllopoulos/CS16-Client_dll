@@ -722,6 +722,35 @@ void RemoveBody( TEMPENTITY *te, float frametime, float current_time )
 {
 	//if ( current_time >= gEngfuncs.pfnGetCvarFloat("cl_corpsestay") + te->entity.curstate.fuser2 + 5.0f )
 	//	te->entity.origin.z = te->entity.origin.z - 5.0f * frametime;
+
+
+	pmtrace_t tr;
+    Vector vStart = te->entity.origin;
+    Vector vEnd = vStart;
+    
+    // Ελέγχουμε την απόσταση μέχρι το πάτωμα (προς τα κάτω)
+    vEnd.z -= 8192.0f; 
+
+    gEngfuncs.pEventAPI->EV_SetTraceHull( 2 );
+    gEngfuncs.pEventAPI->EV_PlayerTrace( vStart, vEnd, PM_STUDIO_BOX | PM_WORLD_ONLY, -1, &tr );
+
+    if ( tr.fraction < 1.0f )
+    {
+        float fDistanceToGround = vStart.z - tr.endpos.z;
+
+        // Αν το πτώμα είναι πάνω από 2 units στον αέρα (π.χ. από crouch ή άλμα)
+        if ( fDistanceToGround > 2.0f )
+        {
+            // Το τραβάμε προς τα κάτω (προσομοίωση βαρύτητας)
+            te->entity.origin.z -= 250.0f * frametime;
+
+            // Σιγουρευόμαστε ότι δεν θα περάσει μέσα από το πάτωμα
+            if ( te->entity.origin.z < tr.endpos.z )
+            {
+                te->entity.origin.z = tr.endpos.z;
+            }
+        }
+    }
 }
 
 void HitBody( TEMPENTITY *ent, pmtrace_s *ptr )
