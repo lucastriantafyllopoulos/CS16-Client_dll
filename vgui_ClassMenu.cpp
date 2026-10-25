@@ -34,6 +34,8 @@
 #include "vgui_TeamFortressViewport.h"
 #include "vgui_ServerBrowser.h"
 
+extern int g_iPlayerClass; //extern
+
 // Class Menu Dimensions
 #define CLASSMENU_TITLE_X				XRES(40)
 #define CLASSMENU_TITLE_Y				YRES(32)

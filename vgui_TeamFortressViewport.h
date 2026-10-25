@@ -104,6 +104,8 @@ extern TeamFortressViewport *gViewPort;
 #define CLMENU_PLAYER_INDENT	(((float)CLMENU_SIZE_X / 3) * 2)
 #define CLMENU_INDENT_Y			(((float)ScreenHeight - CLMENU_SIZE_Y) / 2)
 
+#define MAX_TEAMNAME_SIZE 16
+#define MAX_SERVERNAME_LENGTH 64
 // Arrows
 enum
 {
@@ -860,7 +862,8 @@ public:
 
 	virtual void actionPerformed(Panel* panel)
 	{
-		gHUD.m_Spectator.FindPlayer(m_szplayer);
+		//gHUD.m_Spectator.FindPlayer(m_szplayer);
+		//FindNextPlayer(m_szplayer);
 		gViewPort->HideCommandMenu();
 	}
 };
@@ -1794,7 +1797,8 @@ public:
 		else
 			a = MIN_ALPHA;
 
-		gHUD.m_Health.GetPainColor( r, g, b );
+			int dummy_a;
+		gHUD.m_Health.GetPainColor( r, g, b , dummy_a);
 		ScaleColors(r, g, b, a );
 
 		// If health is getting low, make it bright red
@@ -1806,12 +1810,12 @@ public:
 		m_pHealthTGA->getPos(iXPos, iYPos);
 
 		// Paint the player's health
-		int x = gHUD.DrawHudNumber( iXPos + iXSize + 5, iYPos + 5, DHN_3DIGITS | DHN_DRAWZERO, gHUD.m_Health.m_iHealth, r, g, b);
+		//int x = gHUD.DrawHudNumber( iXPos + iXSize + 5, iYPos + 5, DHN_3DIGITS | DHN_DRAWZERO, gHUD.m_Health.m_iHealth, r, g, b);
 
 		// Draw the vertical line
-		int HealthWidth = gHUD.GetSpriteRect(gHUD.m_HUD_number_0).right - gHUD.GetSpriteRect(gHUD.m_HUD_number_0).left;
-		x += HealthWidth / 2;
-		FillRGBA(x, iYPos + 5, HealthWidth / 10, gHUD.m_iFontHeight, 255, 160, 0, a);
+		//int HealthWidth = gHUD.GetSpriteRect(gHUD.m_HUD_number_0).right - gHUD.GetSpriteRect(gHUD.m_HUD_number_0).left;
+		//x += HealthWidth / 2;
+		//FillRGBA(x, iYPos + 5, HealthWidth / 10, gHUD.m_iFontHeight, 255, 160, 0, a);
 	}
 };
 

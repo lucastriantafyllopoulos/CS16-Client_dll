@@ -880,55 +880,6 @@ private:
 //-----------------------------------------------------
 //
 
-class CHudSpectatorGui: public CHudBase
-{
-public:
-	int Init();
-	int VidInit();
-	int Draw( float flTime );
-	void InitHUDData();
-	void Reset();
-	void Shutdown();
-
-	CHudMsgFunc( SpecHealth );
-	CHudMsgFunc( SpecHealth2 );
-
-	CHudUserCmd( ToggleSpectatorMenu );
-	CHudUserCmd( ToggleSpectatorMenuOptions );
-	CHudUserCmd( ToggleSpectatorMenuOptionsSettings );
-	CHudUserCmd( ToggleSpectatorMenuSpectateOptions );
-
-	void CalcAllNeededData( );
-
-	bool m_bBombPlanted;
-	int m_iPlayerLastPointedAt;
-
-private:	
-	// szMapName is 64 bytes only. Removing "maps/" and ".bsp" gived me this result
-	class Labels
-	{
-	public:
-		short m_iTerrorists;
-		short m_iCounterTerrorists;
-		char m_szTimer[64];
-		char m_szMap[64];
-		char m_szNameAndHealth[80];
-	} label;
-	int m_hTimerTexture;
-
-	enum {
-		ROOT_MENU = (1<<0),
-		MENU_OPTIONS = (1<<1),
-		MENU_OPTIONS_SETTINGS = (1<<2),
-		MENU_SPEC_OPTIONS = (1<<3)
-	};
-	byte m_menuFlags;
-};
-
-//
-//-----------------------------------------------------
-//
-
 class CHud
 {
 public:
@@ -1056,7 +1007,6 @@ public:
 	CHudSniperScope m_SniperScope;
 	CHudNVG         m_NVG;
 	CHudRadar       m_Radar;
-	CHudSpectatorGui m_SpectatorGui;
 	CHudScenario	m_Scenario;
 
 	// user messages

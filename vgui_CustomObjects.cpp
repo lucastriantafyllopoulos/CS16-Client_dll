@@ -34,6 +34,9 @@
 #include "vgui_ServerBrowser.h"
 #include "vgui_loadtga.h"
 
+extern int g_iPlayerClass;// extern
+
+
 // Arrow filenames
 char *sArrowFilenames[] =
 {

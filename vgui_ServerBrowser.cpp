@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2002, Valve LLC, All rights reserved. ============
+//========= Copyright ï¿½ 1996-2002, Valve LLC, All rights reserved. ============
 //
 // Purpose: 
 //
@@ -115,7 +115,8 @@ public:
 
 	void DoCancel( void )
 	{
-		EngineClientCmd( "togglebrowser\n" );
+		//EngineClientCmd( "togglebrowser\n" ); allagi
+		gEngfuncs.pfnClientCmd("togglebrowser\n");
 	}
 
 	void DoConnect( void )
@@ -133,7 +134,8 @@ public:
 
 		sprintf( sz, "connect %s\n", address );
 
-		EngineClientCmd( sz );
+		//EngineClientCmd( sz ); //allagi
+		gEngfuncs.pfnClientCmd(sz);
 
 		DoCancel();
 	}

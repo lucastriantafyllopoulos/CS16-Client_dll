@@ -718,70 +718,6 @@ void EV_CS16Client_KillEveryRound( TEMPENTITY *te, float frametime, float curren
 	}
 }
 
-/*void RemoveBody( TEMPENTITY *te, float frametime, float current_time )
-{
-	//if ( current_time >= gEngfuncs.pfnGetCvarFloat("cl_corpsestay") + te->entity.curstate.fuser2 + 5.0f )
-	//	te->entity.origin.z = te->entity.origin.z - 5.0f * frametime;
-
-
-	pmtrace_t tr;
-    Vector vStart = te->entity.origin;
-    Vector vEnd = vStart;
-    
-    // Ελέγχουμε την απόσταση μέχρι το πάτωμα (προς τα κάτω)
-    vEnd.z -= 8192.0f; 
-
-    gEngfuncs.pEventAPI->EV_SetTraceHull( 2 );
-    gEngfuncs.pEventAPI->EV_PlayerTrace( vStart, vEnd, PM_STUDIO_BOX | PM_WORLD_ONLY, -1, &tr );
-
-    if ( tr.fraction < 1.0f )
-    {
-        float fDistanceToGround = vStart.z - tr.endpos.z;
-
-        // Αν το πτώμα είναι πάνω από 2 units στον αέρα (π.χ. από crouch ή άλμα)
-        if ( fDistanceToGround > 2.0f )
-        {
-            // Το τραβάμε προς τα κάτω (προσομοίωση βαρύτητας)
-            te->entity.origin.z -= 250.0f * frametime;
-
-            // Σιγουρευόμαστε ότι δεν θα περάσει μέσα από το πάτωμα
-            if ( te->entity.origin.z < tr.endpos.z )
-            {
-                te->entity.origin.z = tr.endpos.z;
-            }
-        }
-    }
-}*/
-
-
-void RemoveBody( TEMPENTITY *te, float frametime, float current_time )
-{
-    // ΛΥΣΗ 1: Ασφαλέστερο κλείδωμα του Animation για να μην κάνει snap back
-    // Χρησιμοποιούμε 254.0f αντί για 255.0f για να προλάβουμε το engine loop
-    if ( te->entity.curstate.frame >= 254.0f || te->entity.curstate.frame < 0.0f )
-    {
-        te->flags &= ~FTENT_SPRANIMATE;
-        te->entity.curstate.frame = 255.0f; // Το αφήνουμε ξαπλωμένο
-    }
-
-    // ΛΥΣΗ 2: Ομαλή πτώση / Διόρθωση Crouch
-    pmtrace_t tr;
-    Vector vStart = te->entity.origin;
-    Vector vEnd = vStart;
-    vEnd.z -= 4096.0f;
-    
-    gEngfuncs.pEventAPI->EV_SetTraceHull( 2 ); 
-    gEngfuncs.pEventAPI->EV_PlayerTrace( vStart, vEnd, PM_STUDIO_BOX | PM_WORLD_ONLY, -1, &tr );
-    
-    if ( te->entity.origin.z > tr.endpos.z )
-    {
-        // Αυξημένη ταχύτητα πτώσης για πιο ρεαλιστική αίσθηση (από 300 σε 400)
-        te->entity.origin.z -= 400.0f * frametime;
-        
-        if ( te->entity.origin.z < tr.endpos.z )
-            te->entity.origin.z = tr.endpos.z;
-    }
-}
 
 void HitBody( TEMPENTITY *ent, pmtrace_s *ptr )
 {
@@ -791,23 +727,75 @@ void HitBody( TEMPENTITY *ent, pmtrace_s *ptr )
 
 TEMPENTITY *g_DeadPlayerModels[64];
 
-void CreateCorpse(Vector vOrigin, Vector vAngles, const char *pModel, float flAnimTime, int iSequence, int iBody, int iPlayerIndex)
+/*void RemoveBody( TEMPENTITY *te, float frametime, float current_time )
+{
+    // 1. ΟΡΙΣΤΙΚΗ ΛΥΣΗ ΓΙΑ ΤΟ ANIMATION (SNAP BACK):
+    // Αντί να ελέγχουμε τα frames, μετράμε τον χρόνο. Μετά από 2.5 δευτερόλεπτα
+    // (που έχει σίγουρα τελειώσει το death animation), παγώνουμε την κίνηση!
+    float elapsed = current_time - te->entity.curstate.animtime;
+    if ( elapsed > 2.5f ) 
+    {
+        te->entity.curstate.framerate = 0.0f; // Το πτώμα μένει εντελώς ακίνητο!
+    }
+
+    // 2. ΟΡΙΣΤΙΚΗ ΛΥΣΗ ΓΙΑ ΤΟ CROUCH/FLOATING:
+    pmtrace_t tr;
+    Vector vStart = te->entity.origin;
+    vStart.z += 5.0f; // Σηκώνουμε το σημείο εκκίνησης για να μην "τυφλωθεί" το trace από το πάτωμα
+    Vector vEnd = vStart;
+    vEnd.z -= 4096.0f;
+    
+    // Χρησιμοποιούμε PM_STUDIO_IGNORE για να βρούμε με 100% ακρίβεια τον χάρτη
+    gEngfuncs.pEventAPI->EV_SetTraceHull( 2 ); 
+    gEngfuncs.pEventAPI->EV_PlayerTrace( vStart, vEnd, PM_STUDIO_IGNORE, -1, &tr );
+    
+    // Αν το πτώμα είναι πάνω από το πραγματικό πάτωμα
+    if ( te->entity.origin.z > tr.endpos.z )
+    {
+        te->entity.origin.z -= 450.0f * frametime; // Ομαλή αλλά γρήγορη πτώση
+        
+        // Αν το ξεπεράσει, το καρφώνουμε ακριβώς εκεί
+        if ( te->entity.origin.z <= tr.endpos.z )
+        {
+            te->entity.origin.z = tr.endpos.z;
+        }
+    }
+}*/
+
+/*void CreateCorpse(Vector vOrigin, Vector vAngles, const char *pModel, float flAnimTime, int iSequence, int iBody)
 {
     int modelIdx = gEngfuncs.pEventAPI->EV_FindModelIndex(pModel);
     Vector zeroVelocity(0, 0, 0);
 
-    // ΛΥΣΗ 3: Χρήση του g_DeathYaw για να μην περιστρέφεται το πτώμα προς τον shooter.
-    // Προϋποθέτει ότι περνάς το iPlayerIndex (1-32) στην CreateCorpse από την συνάρτηση που την καλεί.
-    // Αν δεν μπορείς να αλλάξεις τα arguments, άφησε το vAngles[1] αλλά φρόντισε το 
-    // event parser να μην στέλνει τα attacker angles.
+    // Το δικό σου σωστό fix για το Yaw
     float correctYaw = vAngles[1]; 
-    if (iPlayerIndex >= 1 && iPlayerIndex <= 32)
+    if (iBody >= 1 && iBody <= 32)
     {
-        correctYaw = g_DeathYaw[iPlayerIndex]; 
+		correctYaw = g_DeathYaw[iBody];
     }
-
     Vector lockedAngles(0.0f, correctYaw, 0.0f);
     
+    // ΝΕΟ: Ελέγχουμε την απόσταση του vOrigin από το πραγματικό πάτωμα
+    pmtrace_t tr;
+    Vector vTraceStart = vOrigin;
+    vTraceStart.z += 10.0f; // Σηκώνουμε λίγο την αφετηρία για να μην κάνει "start solid"
+    Vector vTraceEnd = vTraceStart;
+    vTraceEnd.z -= 128.0f; // Ψάχνουμε το έδαφος προς τα κάτω
+    
+    gEngfuncs.pEventAPI->EV_SetTraceHull( 2 ); 
+    gEngfuncs.pEventAPI->EV_PlayerTrace( vTraceStart, vTraceEnd, PM_WORLD_ONLY, -1, &tr );
+    
+    // Αν βρήκαμε πάτωμα και το origin του παίκτη είναι κάτω από το ύψος του όρθιου (36 units)
+    // σημαίνει ότι πέθανε crouched. Του "κλέβουμε" το Z και το βάζουμε στα 36.
+    if ( tr.fraction < 1.0f )
+    {
+        float flDistToFloor = vOrigin.z - tr.endpos.z;
+        if ( flDistToFloor < 36.0f )
+        {
+            vOrigin.z = tr.endpos.z + 36.0f;
+        }
+    }
+
     TEMPENTITY *model = gEngfuncs.pEfxAPI->R_TempModel( vOrigin, zeroVelocity, lockedAngles, 100.0f, modelIdx, 0 );
 
     if( model )
@@ -825,7 +813,206 @@ void CreateCorpse(Vector vOrigin, Vector vAngles, const char *pModel, float flAn
         model->entity.curstate.renderamt = 255;
         model->entity.curstate.fuser2 = gHUD.m_flTime + gEngfuncs.pfnGetCvarFloat("cl_corpsestay");
         
+        // Οπωσδήποτε NULL, όπως βρήκες ότι δουλεύει σωστά για το animation
+        model->callback = NULL;
+        model->hitcallback = NULL; 
+        model->bounceFactor = 0.0f; 
+        model->die = gEngfuncs.GetClientTime() + gEngfuncs.pfnGetCvarFloat("cl_corpsestay") + 9.0f;
+
+        for ( int i = 0; i < 64; i++ )
+        {
+            if ( !g_DeadPlayerModels[i] )
+            {
+                g_DeadPlayerModels[i] = model;
+                break;
+            }
+        }
+    }
+}*/
+
+/*void CreateCorpse(Vector vOrigin, Vector vAngles, const char *pModel, float flAnimTime, int iSequence, int iBody)
+{
+    int modelIdx = gEngfuncs.pEventAPI->EV_FindModelIndex(pModel);
+    Vector zeroVelocity(0, 0, 0);
+
+    // 1. Διόρθωση Yaw (Headshot): Το iBody περιέχει το Player Index (1-32)
+    // Τραβάμε τη σωστή γωνία θανάτου από τον πίνακα g_DeathYaw.
+    float correctYaw = vAngles[1]; 
+    if (iBody >= 1 && iBody <= 32)
+    {
+        correctYaw = g_DeathYaw[iBody]; 
+    }
+
+    Vector lockedAngles(0.0f, correctYaw, 0.0f);
+    
+    TEMPENTITY *model = gEngfuncs.pEfxAPI->R_TempModel( vOrigin, zeroVelocity, lockedAngles, 100.0f, modelIdx, 0 );
+
+    if( model )
+    {
+        // 2. Διόρθωση Αιωρούμενων Πτωμάτων: 
+        // Προσθέσαμε το FTENT_GRAVITY. Μόλις το animation τελειώσει, η βαρύτητα αναλαμβάνει.
+        model->flags = (FTENT_CLIENTCUSTOM | FTENT_SPRANIMATE | FTENT_FADEOUT | FTENT_PERSIST | FTENT_GRAVITY); 
+        
+        model->frameMax = 255.0f;
+        model->entity.curstate.framerate = 1.0f;
+        model->entity.curstate.animtime = flAnimTime;
+        model->entity.curstate.frame = 0.0f;
+        model->entity.curstate.fuser1 = gHUD.m_flTime + 1.0f;
+        model->entity.curstate.sequence = iSequence;
+        model->entity.curstate.body = iBody; 
+        model->entity.baseline.renderamt = 255;
+        model->entity.curstate.renderamt = 255;
+        model->entity.curstate.fuser2 = gHUD.m_flTime + gEngfuncs.pfnGetCvarFloat("cl_corpsestay");
+        
+        // 3. Callback = NULL: Αφήνει το animation να ρέει φυσικά χωρίς διακοπές
+        model->callback = NULL;
+        model->hitcallback = NULL; 
+        model->bounceFactor = 0.0f; 
+        model->die = gEngfuncs.GetClientTime() + gEngfuncs.pfnGetCvarFloat("cl_corpsestay") + 9.0f;
+
+        for ( int i = 0; i < 64; i++ )
+        {
+            if ( !g_DeadPlayerModels[i] )
+            {
+                g_DeadPlayerModels[i] = model;
+                break;
+            }
+        }
+    }
+}*/
+
+void RemoveBody( TEMPENTITY *te, float frametime, float current_time )
+{
+    // Δεν πειράζουμε ΠΟΤΕ το te->entity.curstate.frame, άρα το animation ρέει τέλεια!
+
+    // Βρίσκουμε πού είναι το πραγματικό πάτωμα κάτω από το πτώμα
+    pmtrace_t tr;
+    Vector vStart = te->entity.origin;
+    vStart.z += 5.0f; // Σηκώνουμε λίγο την αφετηρία για να μην εγκλωβιστεί το trace
+    Vector vEnd = vStart;
+    vEnd.z -= 8192.0f;
+    
+    gEngfuncs.pEventAPI->EV_SetTraceHull( 2 ); 
+    gEngfuncs.pEventAPI->EV_PlayerTrace( vStart, vEnd, PM_WORLD_ONLY, -1, &tr );
+    
+    // Αν το πτώμα βρεθεί ψηλότερα από το πάτωμα (π.χ. επειδή πέθανε σε άλμα ή το έσπρωξες)
+    if ( te->entity.origin.z > tr.endpos.z )
+    {
+        // Εφαρμόζουμε τη δική μας, ασφαλή βαρύτητα (πέφτει προς τα κάτω)
+        te->entity.origin.z -= 300.0f * frametime;
+        
+        // Μόλις φτάσει ακριβώς στο πάτωμα, το "κλειδώνουμε" εκεί για να μην το τρυπήσει
+        if ( te->entity.origin.z < tr.endpos.z )
+        {
+            te->entity.origin.z = tr.endpos.z;
+        }
+    }
+}
+
+/*void CreateCorpse(Vector vOrigin, Vector vAngles, const char *pModel, float flAnimTime, int iSequence, int iBody)
+{
+    int modelIdx = gEngfuncs.pEventAPI->EV_FindModelIndex(pModel);
+    Vector zeroVelocity(0, 0, 0);
+
+    // Διόρθωση Yaw (Headshot): Παίρνουμε το σωστό Player Index
+    float correctYaw = vAngles[1]; 
+    if (iBody >= 1 && iBody <= 32)
+    {
+        correctYaw = g_DeathYaw[iBody]; 
+    }
+
+    Vector lockedAngles(0.0f, correctYaw, 0.0f);
+    
+    TEMPENTITY *model = gEngfuncs.pEfxAPI->R_TempModel( vOrigin, zeroVelocity, lockedAngles, 100.0f, modelIdx, 0 );
+
+    if( model )
+    {
+        // ΑΦΑΙΡΕΘΗΚΕ ΤΟ FTENT_GRAVITY για να μην τρυπάει το έδαφος
+        model->flags = (FTENT_CLIENTCUSTOM | FTENT_SPRANIMATE | FTENT_FADEOUT | FTENT_PERSIST); 
+        
+        model->frameMax = 255.0f;
+        model->entity.curstate.framerate = 1.0f;
+        model->entity.curstate.animtime = flAnimTime;
+        model->entity.curstate.frame = 0.0f;
+        model->entity.curstate.fuser1 = gHUD.m_flTime + 1.0f;
+        model->entity.curstate.sequence = iSequence;
+        model->entity.curstate.body = iBody; 
+        model->entity.baseline.renderamt = 255;
+        model->entity.curstate.renderamt = 255;
+        model->entity.curstate.fuser2 = gHUD.m_flTime + gEngfuncs.pfnGetCvarFloat("cl_corpsestay");
+        
+        // Ενεργοποιούμε τη RemoveBody. Αφού δεν πειράζει frames, θα λειτουργήσει απλά σαν ασφαλής βαρύτητα.
         model->callback = RemoveBody;
+        model->hitcallback = NULL; 
+        model->bounceFactor = 0.0f; 
+        model->die = gEngfuncs.GetClientTime() + gEngfuncs.pfnGetCvarFloat("cl_corpsestay") + 9.0f;
+
+        for ( int i = 0; i < 64; i++ )
+        {
+            if ( !g_DeadPlayerModels[i] )
+            {
+                g_DeadPlayerModels[i] = model;
+                break;
+            }
+        }
+    }
+}*/
+
+void CreateCorpse(Vector vOrigin, Vector vAngles, const char *pModel, float flAnimTime, int iSequence, int iBody)
+{
+    int modelIdx = gEngfuncs.pEventAPI->EV_FindModelIndex(pModel);
+    Vector zeroVelocity(0, 0, 0);
+
+    // Διόρθωση Yaw (Instant Turn Headshot): Το iBody κρατάει το σωστό Player Index
+    float correctYaw = vAngles[1]; 
+    if (iBody >= 1 && iBody <= 32)
+    {
+        correctYaw = g_DeathYaw[iBody]; 
+    }
+    Vector lockedAngles(0.0f, correctYaw, 0.0f);
+    
+    // Διόρθωση Crouch Bug: 
+    // Ένας σκυφτός παίκτης έχει vOrigin.z κοντά στα 18 units από το έδαφος, ενώ ο όρθιος ~36.
+    // Ελέγχουμε την απόσταση από το πάτωμα.
+    pmtrace_t tr;
+    Vector vTraceEnd = vOrigin;
+    vTraceEnd.z -= 64.0f; // Σκανάρουμε ελαφρώς προς τα κάτω
+    
+    gEngfuncs.pEventAPI->EV_SetTraceHull( 2 ); 
+    gEngfuncs.pEventAPI->EV_PlayerTrace( vOrigin, vTraceEnd, PM_WORLD_ONLY, -1, &tr );
+    
+    if ( tr.fraction < 1.0f )
+    {
+        float distToFloor = vOrigin.z - tr.endpos.z;
+        // Αν το vOrigin είναι πολύ χαμηλά (crouch death)
+        if ( distToFloor < 36.0f )
+        {
+            // Το σηκώνουμε αναγκαστικά στο ύψος του όρθιου (36 units) 
+            // ώστε το animation να ξεδιπλωθεί χωρίς clipping στο πάτωμα.
+            vOrigin.z = tr.endpos.z + 36.0f;
+        }
+    }
+
+    TEMPENTITY *model = gEngfuncs.pEfxAPI->R_TempModel( vOrigin, zeroVelocity, lockedAngles, 100.0f, modelIdx, 0 );
+
+    if( model )
+    {
+        // ΜΟΝΟ τα βασικά flags, ΟΧΙ GRAVITY. 
+        model->flags = (FTENT_CLIENTCUSTOM | FTENT_SPRANIMATE | FTENT_FADEOUT | FTENT_PERSIST); 
+        
+        model->frameMax = 255.0f;
+        model->entity.curstate.framerate = 1.0f;
+        model->entity.curstate.animtime = flAnimTime;
+        model->entity.curstate.frame = 0.0f;
+        model->entity.curstate.fuser1 = gHUD.m_flTime + 1.0f;
+        model->entity.curstate.sequence = iSequence;
+        model->entity.curstate.body = iBody; 
+        model->entity.baseline.renderamt = 255;
+        model->entity.curstate.renderamt = 255;
+        model->entity.curstate.fuser2 = gHUD.m_flTime + gEngfuncs.pfnGetCvarFloat("cl_corpsestay");
+        
+        // CALLBACK = NULL (Ακριβώς όπως το ζήτησες και βρήκες ότι ρέει τέλεια το animation)
+        model->callback = NULL;
         model->hitcallback = NULL; 
         model->bounceFactor = 0.0f; 
         model->die = gEngfuncs.GetClientTime() + gEngfuncs.pfnGetCvarFloat("cl_corpsestay") + 9.0f;

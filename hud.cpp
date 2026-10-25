@@ -387,8 +387,8 @@ void CHud :: Init( void )
 	m_NVG.Init();
 
 	// Spectator GUI is not need in singleplayer czeror
-	if( GetGameType() != GAME_CZERODS )
-		m_SpectatorGui.Init();
+	/*if( GetGameType() != GAME_CZERODS )
+		m_SpectatorGui.Init();*/
 
 	// Game HUD things
 	m_Ammo.Init();

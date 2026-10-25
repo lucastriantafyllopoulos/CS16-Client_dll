@@ -35,6 +35,10 @@
 #include "Exports.h"
 #include "cs_vgui.h"
 #include "cs_vgui2.h"
+#include "vgui_int.h"
+#include "vgui_TeamFortressViewport.h"
+
+extern TeamFortressViewport *gViewPort;
 
 cl_enginefunc_t		gEngfuncs = { };
 CHud gHUD;
@@ -384,8 +388,11 @@ so the HUD can reinitialize itself.
 
 int CL_DLLEXPORT HUD_VidInit(void)
 {
-	CS16_StartupTrace("HUD_VidInit: enter");
+	CS16_StartupTrace("HUD_VidInit: enter");	
 	gHUD.VidInit();
+	
+	VGui_Startup();
+	
 	CS16VGUI_Startup(ScreenWidth, ScreenHeight);
 	CS16_StartupTrace("HUD_VidInit: complete");
 
@@ -435,6 +442,7 @@ int CL_DLLEXPORT HUD_Redraw(float time, int intermission)
 	if (traceThisCall)
 		CS16_StartupTrace("HUD_Redraw: enter");
 	gHUD.Redraw(time, intermission);
+
 	if (traceThisCall)
 	{
 		CS16_StartupTrace("HUD_Redraw: complete");

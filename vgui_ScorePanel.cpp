@@ -31,13 +31,13 @@
 #include "voice_status.h"
 #include "vgui_SpectatorPanel.h"
 
-extern hud_player_info_t	 g_PlayerInfoList[MAX_PLAYERS+1];	   // player info from the engine
+//extern hud_player_info_t	 g_PlayerInfoList[MAX_PLAYERS+1];	   // player info from the engine
 extern extra_player_info_t  g_PlayerExtraInfo[MAX_PLAYERS+1];   // additional player info sent directly to the client dll
-team_info_t			 g_TeamInfo[MAX_TEAMS+1];
+extern team_info_t	 g_TeamInfo[MAX_TEAMS+1];
 int					 g_IsSpectator[MAX_PLAYERS+1];
 
 int HUD_IsGame( const char *game );
-int EV_TFC_IsAllyTeam( int iTeam1, int iTeam2 );
+//int EV_TFC_IsAllyTeam( int iTeam1, int iTeam2 );
 
 // Scoreboard dimensions
 #define SBOARD_TITLE_SIZE_Y			YRES(22)
@@ -316,7 +316,7 @@ void ScorePanel::SortTeams()
 	{
 		if ( !g_TeamInfo[i].scores_overriden )
 			g_TeamInfo[i].frags = g_TeamInfo[i].deaths = 0;
-		g_TeamInfo[i].ping = g_TeamInfo[i].packetloss = 0;
+		//g_TeamInfo[i].ping = g_TeamInfo[i].packetloss = 0; prosorino sxolio
 	}
 
 	// recalc the team scores, then draw them
@@ -344,8 +344,8 @@ void ScorePanel::SortTeams()
 			g_TeamInfo[j].deaths += g_PlayerExtraInfo[i].deaths;
 		}
 
-		g_TeamInfo[j].ping += g_PlayerInfoList[i].ping;
-		g_TeamInfo[j].packetloss += g_PlayerInfoList[i].packetloss;
+		//g_TeamInfo[j].ping += g_PlayerInfoList[i].ping; //prosorina sxolia
+		//g_TeamInfo[j].packetloss += g_PlayerInfoList[i].packetloss; //prosorina sxolia
 
 		if ( g_PlayerInfoList[i].thisplayer )
 			g_TeamInfo[j].ownteam = TRUE;
@@ -363,8 +363,8 @@ void ScorePanel::SortTeams()
 
 		if ( g_TeamInfo[i].players > 0 )
 		{
-			g_TeamInfo[i].ping /= g_TeamInfo[i].players;  // use the average ping of all the players in the team as the teams ping
-			g_TeamInfo[i].packetloss /= g_TeamInfo[i].players;  // use the average ping of all the players in the team as the teams ping
+			//g_TeamInfo[i].ping /= g_TeamInfo[i].players;  // use the average ping of all the players in the team as the teams ping
+			//g_TeamInfo[i].packetloss /= g_TeamInfo[i].players;  // use the average ping of all the players in the team as the teams ping
 		}
 	}
 
@@ -741,7 +741,8 @@ void ScorePanel::FillGrid()
 					break;
 				case COLUMN_LATENCY:
 					if ( m_iIsATeam[row] == TEAM_YES )
-						sprintf(sz, "%d", team_info->ping );
+						//sprintf(sz, "%d", team_info->ping ); //allagi
+						sprintf(sz, "0");
 					break;
 				default:
 					break;
@@ -771,12 +772,12 @@ void ScorePanel::FillGrid()
 					break;
 				case COLUMN_VOICE:
 					sz[0] = 0;
-					GetClientVoiceMgr()->UpdateSpeakerImage(pLabel, m_iSortedRows[row]);
+					//GetClientVoiceMgr()->UpdateSpeakerImage(pLabel, m_iSortedRows[row]);
 					break;
 				case COLUMN_CLASS:
 					// No class for other team's members (unless allied or spectator)
-					if ( gViewPort && EV_TFC_IsAllyTeam( g_iTeamNumber, g_PlayerExtraInfo[ m_iSortedRows[row] ].teamnumber )  )
-						bShowClass = true;
+					//if ( gViewPort && EV_TFC_IsAllyTeam( g_iTeamNumber, g_PlayerExtraInfo[ m_iSortedRows[row] ].teamnumber )  )
+						//bShowClass = true;
 					// Don't show classes if this client hasnt picked a team yet
 					if ( g_iTeamNumber == 0 )
 						bShowClass = false;

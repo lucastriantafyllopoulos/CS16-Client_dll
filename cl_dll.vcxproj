@@ -114,7 +114,6 @@
     <ClCompile Include="hud\scenario.cpp" />
     <ClCompile Include="hud\scoreboard.cpp" />
     <ClCompile Include="hud\sniperscope.cpp" />
-    <ClCompile Include="hud\spectator_gui.cpp" />
     <ClCompile Include="hud\timer.cpp" />
     <ClCompile Include="hud_msg.cpp" />
     <ClCompile Include="hud_redraw.cpp" />
@@ -139,6 +138,12 @@
     <ClCompile Include="train.cpp" />
     <ClCompile Include="tri.cpp" />
     <ClCompile Include="util.cpp" />
+    <ClCompile Include="vgui_CustomObjects.cpp" />
+    <ClCompile Include="vgui_int.cpp" />
+    <ClCompile Include="vgui_MOTDWindow.cpp" />
+    <ClCompile Include="vgui_SchemeManager.cpp" />
+    <ClCompile Include="vgui_SpectatorPanel.cpp" />
+    <ClCompile Include="vgui_TeamFortressViewport.cpp" />
     <ClCompile Include="view.cpp" />
     <ClCompile Include="voice_status.cpp" />
   </ItemGroup>

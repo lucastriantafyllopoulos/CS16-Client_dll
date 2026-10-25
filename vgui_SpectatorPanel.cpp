@@ -14,6 +14,13 @@
 
 #include "Exports.h"
 
+#ifndef XRES_HD
+#define XRES_HD(x) XRES(x)
+#endif
+#ifndef YRES_HD
+#define YRES_HD(x) YRES(x)
+#endif
+
 /*
 ==========================
 HUD_ChatInputPosition
@@ -22,7 +29,7 @@ Sets the location of the input for chat text
 ==========================
 */
 
-void CL_DLLEXPORT HUD_ChatInputPosition( int *x, int *y )
+/*void CL_DLLEXPORT HUD_ChatInputPosition( int *x, int *y )
 {
 //	RecClChatInputPosition( x, y );
 
@@ -37,7 +44,7 @@ void CL_DLLEXPORT HUD_ChatInputPosition( int *x, int *y )
 			*y = YRES_HD( gHUD.m_Spectator.m_OverviewData.insetWindowHeight + 5 );
 		}
 	}
-}
+}*/
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -98,9 +105,11 @@ void SpectatorPanel::Initialize()
 	SchemeHandle_t hSmallScheme = pSchemes->getSchemeHandle( "Team Info Text" );
 	
 	m_TopBorder = new CTransparentPanel(64, 0, 0, ScreenWidth, YRES_HD( PANEL_HEIGHT ));
+	//m_TopBorder = new CTransparentPanel( 0, 0, ScreenWidth, YRES_HD( PANEL_HEIGHT ));
 	m_TopBorder->setParent(this);
 
 	m_BottomBorder = new CTransparentPanel(64, 0, ScreenHeight - YRES_HD( PANEL_HEIGHT ), ScreenWidth, YRES_HD( PANEL_HEIGHT ) );
+	//m_BottomBorder = new CTransparentPanel(0, ScreenHeight - YRES_HD( PANEL_HEIGHT ), ScreenWidth, YRES_HD( PANEL_HEIGHT ) );
 	m_BottomBorder->setParent(this);
 
 	setPaintBackgroundEnabled(false);

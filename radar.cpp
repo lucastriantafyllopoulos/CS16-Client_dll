@@ -640,7 +640,7 @@ int CHudRadar::MsgFunc_BombDrop(const char *pszName, int iSize, void *pbuf)
 		// flag has to be raised, not cleared: the spectator HUD reads it to
 		// show "C4 PLANTED" in place of the countdown. Reset() lowers it again
 		// at the start of the next round.
-		gHUD.m_SpectatorGui.m_bBombPlanted = true;
+		//gHUD.m_SpectatorGui.m_bBombPlanted = true;
 		gHUD.m_Timer.m_iFlags = 0;
 	}
 	return 1;

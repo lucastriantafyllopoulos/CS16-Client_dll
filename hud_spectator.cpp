@@ -24,6 +24,10 @@
 #include "studio_util.h"
 #include "screenfade.h"
 #include "draw_util.h"
+#include "vgui_TeamFortressViewport.h"
+#include "vgui_SpectatorPanel.h"
+
+extern TeamFortressViewport *gViewPort;
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4244)
@@ -556,6 +560,11 @@ int CHudSpectator::Draw(float flTime)
 	if (m_iDrawCycle == 1 && m_pip->value < INSET_MAP_FREE)
 		return 1;
 
+	// ΒΑΛΕ ΑΥΤΟ ΕΔΩ:
+	if (gViewPort) {
+	    gViewPort->UpdateSpectatorPanel();
+	}
+
 	return 1;
 }
 
@@ -794,10 +803,13 @@ void CHudSpectator::HandleButtonsDown(int ButtonPressed)
 	if (m_flNextObserverInput > time)
 		return;
 
-	// enable spectator screen
+	// enable spectator screen (ΑΥΘΕΝΤΙΚΟΣ VGUI ΚΩΔΙΚΑΣ)
 	if (ButtonPressed & IN_DUCK)
 	{
-		gHUD.m_SpectatorGui.UserCmd_ToggleSpectatorMenu();
+		if ( gViewPort && gViewPort->m_pSpectatorPanel )
+		{
+			gViewPort->m_pSpectatorPanel->ShowMenu( !gViewPort->m_pSpectatorPanel->m_menuVisible );
+		}
 	}
 
 	//  'Use' changes inset window mode
@@ -1269,10 +1281,18 @@ void CHudSpectator::DrawOverviewLayer()
 
 			for (ix = 0; ix < xTiles; ix++)
 			{
-				if (m_MapSprite)
-					gEngfuncs.pTriAPI->SpriteTexture(m_MapSprite, frame);
-				else
-					gEngfuncs.pTriAPI->SpriteTexture(dummySprite, 0);
+				if (m_MapSprite) 
+				{
+        			gEngfuncs.pTriAPI->SpriteTexture(m_MapSprite, frame);
+    			} 
+				else if (dummySprite) 
+				{
+        			gEngfuncs.pTriAPI->SpriteTexture(dummySprite, 0);
+    			} 
+				else 
+				{
+        			continue; // Αν λείπει το sprite, προστατεύουμε το παιχνίδι από crash!
+    			}
 
 				gEngfuncs.pTriAPI->Begin(TRI_QUADS);
 				gEngfuncs.pTriAPI->TexCoord2f(0, 0);
@@ -1312,10 +1332,18 @@ void CHudSpectator::DrawOverviewLayer()
 
 			for (iy = 0; iy < xTiles; iy++)
 			{
-				if (m_MapSprite)
-					gEngfuncs.pTriAPI->SpriteTexture(m_MapSprite, frame);
-				else
-					gEngfuncs.pTriAPI->SpriteTexture(dummySprite, 0);
+				if (m_MapSprite) 
+				{
+        			gEngfuncs.pTriAPI->SpriteTexture(m_MapSprite, frame);
+    			} 
+				else if (dummySprite) 
+				{
+        			gEngfuncs.pTriAPI->SpriteTexture(dummySprite, 0);
+    			} 
+				else 
+				{
+        			continue; // Αν λείπει το sprite, προστατεύουμε το παιχνίδι από crash!
+    			}
 
 				gEngfuncs.pTriAPI->Begin(TRI_QUADS);
 				gEngfuncs.pTriAPI->TexCoord2f(0, 0);

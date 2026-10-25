@@ -419,9 +419,6 @@
     <ClCompile Include="hud\sniperscope.cpp">
       <Filter>Source Files\cl_dll</Filter>
     </ClCompile>
-    <ClCompile Include="hud\spectator_gui.cpp">
-      <Filter>Source Files\cl_dll</Filter>
-    </ClCompile>
     <ClCompile Include="hud\timer.cpp">
       <Filter>Source Files\cl_dll</Filter>
     </ClCompile>
@@ -444,6 +441,24 @@
       <Filter>Source Files\ui\common</Filter>
     </ClCompile>
     <ClCompile Include="voice_status.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_SpectatorPanel.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_TeamFortressViewport.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_CustomObjects.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_int.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_SchemeManager.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_MOTDWindow.cpp">
       <Filter>Source Files\cl_dll</Filter>
     </ClCompile>
   </ItemGroup>
