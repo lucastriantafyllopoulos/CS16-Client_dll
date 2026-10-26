@@ -10,6 +10,7 @@
 #include "cl_entity.h"
 #include "triangleapi.h"
 #include "hltv.h"
+#include <stdio.h>
 
 #include "pm_shared.h"
 #include "pm_defs.h"
@@ -37,6 +38,9 @@ extern int		iJumpSpectator;
 extern float	vJumpOrigin[3];
 extern float	vJumpAngles[3];
 
+extern "C" void CS16VGUI2_BeginHudTextFrame(void);
+extern "C" void CS16VGUI2_DrawHudRect(int x, int y, int wide, int tall, int r, int g, int b, int a);
+extern "C" int CS16VGUI2_DrawHudString(int x, int y, const char* text, int r, int g, int b, int a);
 
 extern void V_GetInEyePos(int entity, float* origin, float* angles);
 extern void V_ResetChaseCam();
@@ -449,11 +453,6 @@ int CHudSpectator::VidInit()
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Input  : flTime - 
-//			intermission - 
-//-----------------------------------------------------------------------------
 int CHudSpectator::Draw(float flTime)
 {
 	int lx;
@@ -465,6 +464,113 @@ int CHudSpectator::Draw(float flTime)
 	if (!g_iUser1)
 		return 0;
 
+	// ==========================================================
+	// NATIVE GOLDSRC SPECTATOR UI 
+	// ==========================================================
+	int topBarHeight = 72;    
+	int bottomBarHeight = 40; 
+
+	// 1. Διόρθωση Pointer: Αποθηκεύουμε τα ονόματα σε τοπικές μεταβλητές
+	char szCTName[64];
+	char szTName[64];
+	
+	char* tempCT = CHudTextMessage::BufferedLocaliseTextString("#Cstrike_ScoreBoard_CT");
+	snprintf(szCTName, sizeof(szCTName), "%s", tempCT ? tempCT : "Counter-Terrorists");
+
+	char* tempT = CHudTextMessage::BufferedLocaliseTextString("#Cstrike_ScoreBoard_Ter");
+	snprintf(szTName, sizeof(szTName), "%s", tempT ? tempT : "Terrorists");
+
+	// 2. Ανάγνωση Δεδομένων
+	int t_score = g_TeamInfo[1].frags;
+	int ct_score = g_TeamInfo[2].frags;
+	
+	int money = 0;
+	if (gHUD.cscl_currentmoney)
+		money = (int)gHUD.cscl_currentmoney->value;
+
+	int time_left = gHUD.m_Timer.GetRemainingTime(gHUD.m_flTime);
+
+	// 3. Προετοιμασία τελικών κειμένων
+	char szCTScore[64], szTScore[64], szMoney[64], szTime[64];
+	snprintf(szCTScore, sizeof(szCTScore), "%s : %d", szCTName, ct_score);
+	snprintf(szTScore, sizeof(szTScore), "%s : %d", szTName, t_score);
+	snprintf(szMoney, sizeof(szMoney), "$%d", money);
+	snprintf(szTime, sizeof(szTime), "  %d:%02d", time_left / 60, time_left % 60);
+
+	// Υπολογισμός δυναμικού πλάτους (για τέλεια δεξιά στοίχιση)
+	int ctWidth = DrawUtils::ConsoleStringLen(szCTScore);
+	int tWidth = DrawUtils::ConsoleStringLen(szTScore);
+	int rightX = ScreenWidth - 100; // Σταθερό σημείο για τη διαχωριστική γραμμή
+
+	// 4. Ζωγραφίζουμε τις μπάρες και τη γραμμή με το pTriAPI για 100% ορατότητα
+	gEngfuncs.pTriAPI->RenderMode(kRenderTransColor);
+	gEngfuncs.pTriAPI->CullFace(TRI_NONE);
+	
+	// Μαύρη Μπάρα Πάνω
+	gEngfuncs.pTriAPI->Color4ub(0, 0, 0, 180);
+	gEngfuncs.pTriAPI->Begin(TRI_QUADS);
+	gEngfuncs.pTriAPI->Vertex3f(0, 0, 0);
+	gEngfuncs.pTriAPI->Vertex3f(ScreenWidth, 0, 0);
+	gEngfuncs.pTriAPI->Vertex3f(ScreenWidth, topBarHeight, 0);
+	gEngfuncs.pTriAPI->Vertex3f(0, topBarHeight, 0);
+	gEngfuncs.pTriAPI->End();
+
+	// Μαύρη Μπάρα Κάτω
+	gEngfuncs.pTriAPI->Begin(TRI_QUADS);
+	gEngfuncs.pTriAPI->Vertex3f(0, ScreenHeight - bottomBarHeight, 0);
+	gEngfuncs.pTriAPI->Vertex3f(ScreenWidth, ScreenHeight - bottomBarHeight, 0);
+	gEngfuncs.pTriAPI->Vertex3f(ScreenWidth, ScreenHeight, 0);
+	gEngfuncs.pTriAPI->Vertex3f(0, ScreenHeight, 0);
+	gEngfuncs.pTriAPI->End();
+
+	// Κάθετη Πορτοκαλί Γραμμή
+	gEngfuncs.pTriAPI->Color4ub(255, 176, 0, 180); 
+	gEngfuncs.pTriAPI->Begin(TRI_QUADS);
+	gEngfuncs.pTriAPI->Vertex3f(rightX - 2, 16, 0);
+	gEngfuncs.pTriAPI->Vertex3f(rightX - 1, 16, 0);
+	gEngfuncs.pTriAPI->Vertex3f(rightX - 1, 48, 0);
+	gEngfuncs.pTriAPI->Vertex3f(rightX - 2, 48, 0);
+	gEngfuncs.pTriAPI->End();
+
+	// 5. Τυπώνουμε τα κείμενα (ευθυγραμμισμένα δυναμικά με βάση το πλάτος τους)
+	DrawUtils::SetConsoleTextColor((unsigned char)255, (unsigned char)176, (unsigned char)0); // Πορτοκαλί
+	DrawUtils::DrawConsoleString(rightX - 10 - ctWidth, 18, szCTScore); // Αριστερά από τη γραμμή
+	DrawUtils::DrawConsoleString(rightX - 10 - tWidth, 34, szTScore);
+	
+	DrawUtils::DrawConsoleString(rightX + 10, 18, szMoney); // Δεξιά από τη γραμμή
+	
+	DrawUtils::SetConsoleTextColor((unsigned char)180, (unsigned char)180, (unsigned char)50); // Κιτρινωπό
+	DrawUtils::DrawConsoleString(rightX + 10, 34, szTime);
+
+	// 6. Τυπώνουμε το όνομα και το HP με τα σωστά χρώματα ομάδας
+	if (g_iUser2 > 0 && g_iUser2 <= MAX_PLAYERS)
+	{
+		char* playerName = g_PlayerInfoList[g_iUser2].name;
+		if (playerName && playerName[0])
+		{
+			int team = g_PlayerExtraInfo[g_iUser2].teamnumber;
+			int hp = g_PlayerExtraInfo[g_iUser2].health; // Αν βγάζει 0, δοκίμασε sb_health
+
+			// Ξεκάθαρος ορισμός χρωμάτων: 1 = T, 2 = CT
+			int r = 204, g_col = 204, b = 204; // Default Spectator
+			
+			if (team == 1) // Terrorists (Κόκκινο)
+			{
+				r = 255; g_col = 63; b = 63;
+			}
+			else if (team == 2) // Counter-Terrorists (Γαλάζιο)
+			{
+				r = 153; g_col = 204; b = 255;
+			}
+
+			char szPlayerText[128];
+			snprintf(szPlayerText, sizeof(szPlayerText), "%s (%d)", playerName, hp);
+
+			DrawUtils::SetConsoleTextColor((unsigned char)r, (unsigned char)g_col, (unsigned char)b);
+			DrawUtils::DrawConsoleString(ScreenWidth / 2 - (DrawUtils::ConsoleStringLen(szPlayerText) / 2), ScreenHeight - (bottomBarHeight / 2) - 6, szPlayerText);
+		}
+	}
+	// ==========================================================
 
 	// Ενημερώνουμε το VGUI Spectator Panel σε ΚΑΘΕ καρέ!
 	if (gViewPort)
@@ -566,11 +672,6 @@ int CHudSpectator::Draw(float flTime)
 
 	if (m_iDrawCycle == 1 && m_pip->value < INSET_MAP_FREE)
 		return 1;
-
-	// ΒΑΛΕ ΑΥΤΟ ΕΔΩ:
-	if (gViewPort) {
-	    gViewPort->UpdateSpectatorPanel();
-	}
 
 	return 1;
 }
