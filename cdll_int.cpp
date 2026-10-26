@@ -392,6 +392,16 @@ int CL_DLLEXPORT HUD_VidInit(void)
 	gHUD.VidInit();
 	
 	VGui_Startup();
+
+	// Δημιουργούμε το Viewport αν δεν υπάρχει και το κάνουμε ΟΡΑΤΟ
+	if ( !gViewPort )
+	{
+		gViewPort = new TeamFortressViewport( 0, 0, ScreenWidth, ScreenHeight );
+	}
+	if ( gViewPort )
+	{
+		gViewPort->setVisible( true );
+	}
 	
 	CS16VGUI_Startup(ScreenWidth, ScreenHeight);
 	CS16_StartupTrace("HUD_VidInit: complete");
@@ -442,6 +452,12 @@ int CL_DLLEXPORT HUD_Redraw(float time, int intermission)
 	if (traceThisCall)
 		CS16_StartupTrace("HUD_Redraw: enter");
 	gHUD.Redraw(time, intermission);
+
+	// Αναγκάζουμε το παλιό VGUI1 να ζωγραφιστεί στην οθόνη!
+	if (gViewPort)
+	{
+		gViewPort->paintBackground();
+	}
 
 	if (traceThisCall)
 	{

@@ -2201,7 +2201,7 @@ void TeamFortressViewport::paintBackground()
 
 	int extents[4];
 	getAbsExtents(extents[0],extents[1],extents[2],extents[3]);
-	VGui_ViewportPaintBackground(extents);
+	//VGui_ViewportPaintBackground(extents);
 }
 
 //================================================================

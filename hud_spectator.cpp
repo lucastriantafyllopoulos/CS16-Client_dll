@@ -465,6 +465,13 @@ int CHudSpectator::Draw(float flTime)
 	if (!g_iUser1)
 		return 0;
 
+
+	// Ενημερώνουμε το VGUI Spectator Panel σε ΚΑΘΕ καρέ!
+	if (gViewPort)
+	{
+		gViewPort->UpdateSpectatorPanel();
+	}	
+
 	if (m_lastAutoDirector != m_autoDirector->value)
 	{
 		m_lastAutoDirector = m_autoDirector->value;
