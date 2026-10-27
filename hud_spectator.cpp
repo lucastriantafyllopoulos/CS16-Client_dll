@@ -470,10 +470,11 @@ int CHudSpectator::Draw(float flTime)
 	int topBarHeight = 72;    
 	int bottomBarHeight = 40; 
 
-	// 1. Διόρθωση Pointer: Αποθηκεύουμε τα ονόματα σε τοπικές μεταβλητές
+	//Variables for storing teams' names
 	char szCTName[64];
 	char szTName[64];
 	
+	//Taking teams' names from cstrike_english.txt
 	char* tempCT = CHudTextMessage::BufferedLocaliseTextString("#Cstrike_ScoreBoard_CT");
 	snprintf(szCTName, sizeof(szCTName), "%s", tempCT ? tempCT : "Counter-Terrorists");
 
@@ -490,12 +491,12 @@ int CHudSpectator::Draw(float flTime)
 
 	int time_left = gHUD.m_Timer.GetRemainingTime(gHUD.m_flTime);
 
-	// 3. Προετοιμασία τελικών κειμένων
+	//Showing Teams' names, player's money and round time
 	char szCTScore[64], szTScore[64], szMoney[64], szTime[64];
-	snprintf(szCTScore, sizeof(szCTScore), "%s : %d", szCTName, ct_score);
-	snprintf(szTScore, sizeof(szTScore), "%s : %d", szTName, t_score);
-	snprintf(szMoney, sizeof(szMoney), "$%d", money);
-	snprintf(szTime, sizeof(szTime), "  %d:%02d", time_left / 60, time_left % 60);
+	snprintf(szCTScore, sizeof(szCTScore), "%s : %d", szCTName, ct_score); //Counter-Terrorists
+	snprintf(szTScore, sizeof(szTScore), "%s : %d", szTName, t_score); //Terrorists
+	snprintf(szMoney, sizeof(szMoney), "$%d", money); //Money
+	snprintf(szTime, sizeof(szTime), "  %d:%02d", time_left / 60, time_left % 60); //Round Time left
 
 	// Υπολογισμός δυναμικού πλάτους (για τέλεια δεξιά στοίχιση)
 	int ctWidth = DrawUtils::ConsoleStringLen(szCTScore);
@@ -542,29 +543,63 @@ int CHudSpectator::Draw(float flTime)
 	DrawUtils::SetConsoleTextColor((unsigned char)180, (unsigned char)180, (unsigned char)50); // Κιτρινωπό
 	DrawUtils::DrawConsoleString(rightX + 10, 34, szTime);
 
-	// 6. Τυπώνουμε το όνομα και το HP με τα σωστά χρώματα ομάδας
+	//Printing teams' names
 	if (g_iUser2 > 0 && g_iUser2 <= MAX_PLAYERS)
 	{
 		char* playerName = g_PlayerInfoList[g_iUser2].name;
 		if (playerName && playerName[0])
 		{
 			int team = g_PlayerExtraInfo[g_iUser2].teamnumber;
-			int hp = g_PlayerExtraInfo[g_iUser2].health; // Αν βγάζει 0, δοκίμασε sb_health
 
-			// Ξεκάθαρος ορισμός χρωμάτων: 1 = T, 2 = CT
-			int r = 204, g_col = 204, b = 204; // Default Spectator
+			//LIVE HP FIX: Declaring custom table from health.cpp
+			extern int g_LivePlayerHealth[33];
+			int hp = g_LivePlayerHealth[g_iUser2];
+
+			//Safe Fallback:if the table is 0 (e.g first camera change), then
+			//take the value from Scoreboard so it won't be empty or show 0
+			if (hp <= 0)
+			{
+				hp = g_PlayerExtraInfo[g_iUser2].sb_health;
+			}
+			//if player is alive, but server locked Scoreboard at 100,
+			//then check if the engine has sent value via HUD m_iHealth
+			if (hp == 100 && g_iUser2 == gEngfuncs.GetLocalPlayer()->index)
+			{
+				hp = gHUD.m_Health.m_iHealth;
+			}
+
+			//If player is dead, then set HP to 0, so parenthesis can be removed
+			if (g_PlayerExtraInfo[g_iUser2].dead)
+			{
+				hp = 0;
+			}
+
+			bool isDead = g_PlayerExtraInfo[g_iUser2].dead;
+
+			//Teams' names colors
+			int r = 204, g_col = 204, b = 204; //Spectaror color
 			
-			if (team == 1) // Terrorists (Κόκκινο)
+			if (team == 1) //Terrorist (Red)
 			{
 				r = 255; g_col = 63; b = 63;
 			}
-			else if (team == 2) // Counter-Terrorists (Γαλάζιο)
+			else if (team == 2) // Counter-Terrorists (Blue)
 			{
 				r = 153; g_col = 204; b = 255;
 			}
 
 			char szPlayerText[128];
-			snprintf(szPlayerText, sizeof(szPlayerText), "%s (%d)", playerName, hp);
+			
+			//If player is alive, then print Name (HP)
+			if (!isDead && hp >= 0)
+			{
+				snprintf(szPlayerText, sizeof(szPlayerText), "%s (%d)", playerName, hp);
+			}
+			//If player is dead, then print only Name, no zeroes and no parenthesis
+			else
+			{
+				snprintf(szPlayerText, sizeof(szPlayerText), "%s", playerName);
+			}
 
 			DrawUtils::SetConsoleTextColor((unsigned char)r, (unsigned char)g_col, (unsigned char)b);
 			DrawUtils::DrawConsoleString(ScreenWidth / 2 - (DrawUtils::ConsoleStringLen(szPlayerText) / 2), ScreenHeight - (bottomBarHeight / 2) - 6, szPlayerText);

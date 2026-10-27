@@ -32,6 +32,10 @@
 #include "ev_hldm.h"
 #include "com_weapons.h"
 
+// LIVE HP FIX: Custom global πίνακας για να αποθηκεύουμε τη ζωή των αντιπάλων live
+int g_LivePlayerHealth[33] = { 0 };
+
+
 #define PAIN_NAME "sprites/%d_pain.spr"
 #define DAMAGE_NAME "sprites/%d_dmg.spr"
 #define EPSILON 0.4f
@@ -140,9 +144,16 @@ int CHudHealth::MsgFunc_Health(const char* pszName, int iSize, void* pbuf)
 {
 	// TODO: update local health data
 	BufferReader reader(pszName, pbuf, iSize);
-	int x = reader.ReadLong();
+	int x = reader.ReadLong(); //Change ReadByte to ReadLong for greater HP values
 
 	m_iFlags |= HUD_DRAW;
+
+	//LIVE HP FIX: if player is dead/spectator, server sends this message 
+	//for the player being watched (g_iUser2) and save it live
+	if (g_iUser1 > 0 && g_iUser2 > 0 && g_iUser2 <= 32)
+	{
+		g_LivePlayerHealth[g_iUser2] = x;
+	}
 
 	// Only update the fade if we've changed health
 	if (x != m_iHealth)
