@@ -464,9 +464,6 @@ int CHudSpectator::Draw(float flTime)
 	if (!g_iUser1)
 		return 0;
 
-	// ==========================================================
-	// NATIVE GOLDSRC SPECTATOR UI 
-	// ==========================================================
 	int topBarHeight = 72;    
 	int bottomBarHeight = 40; 
 
