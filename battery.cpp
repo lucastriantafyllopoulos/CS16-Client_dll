@@ -58,8 +58,7 @@ int CHudBattery::MsgFunc_Battery(const char* pszName, int iSize, void* pbuf)
 	BufferReader reader(pszName, pbuf, iSize);
 
 	m_iFlags |= HUD_DRAW;
-	// Αλλάζουμε το ReadShort() σε ReadLong() για νούμερα > 32.767
-	int x = reader.ReadLong();
+	int x = reader.ReadLong(); //Changing from ReadByte to ReadLong, for showing great armor value
 
 	if (x != m_iBat)
 	{
@@ -91,24 +90,23 @@ int CHudBattery::Draw(float flTime)
 	// battery can go from 0 to 100 so * 0.01 goes from 0 to 1
 	rc.top += m_iHeight * ((float)(100 - (min(100, m_iBat))) * 0.01f);
 
-	// Κλειδώνουμε το χρώμα στο απόλυτο λευκό χωρίς διαφάνειες
+	// Lock color to solid white with no transparency (alpha transparency)
 	r = 255; 
 	g = 255; 
 	b = 255;
 
 	y = ScreenHeight - gHUD.m_iFontHeight - gHUD.m_iFontHeight / 2;
 	
-	// --- ΝΕΑ ΛΟΓΙΚΗ ΤΟΠΟΘΕΤΗΣΗΣ (ΣΤΑΘΕΡΗ ΑΓΚΥΡΑ) ---
-	// Βρίσκουμε το πλάτος ενός αριθμού
+	// Find the pixel width of a single digit sprite
 	int digitWidth = gHUD.GetSpriteRect(gHUD.m_HUD_number_0).Width();
 	
-	// Υπολογίζουμε τη θέση:
-	// ~40 pixels για το εικονίδιο του σταυρού (Health)
-	// + τον χώρο για 6 ψηφία (digitWidth * 6)
-	// + 20 pixels σταθερό κενό ανάμεσα στο Health και το Armor
+	//Calculate the starting X position for the Armor icon so it never overlaps with Health:
+	// ~40 pixels reserved for the Health cross icon
+	// + Space reserved for up to 6 Health digits (digitWidth * 6)
+	// + 20 pixels static gap between the Health and Armor blocks
 	x = 40 + (digitWidth * 6) + 20; 
 
-	// make sure we have the right sprite handles
+	// Make sure we have the right sprite handles
 	SPR_Set(m_hFull[m_enArmorType].spr, r, g, b);
 	SPR_DrawAdditive(0, x, y, &m_hFull[m_enArmorType].rect);
 
@@ -118,10 +116,13 @@ int CHudBattery::Draw(float flTime)
 		SPR_DrawAdditive(0, x, y + (rc.top - m_hEmpty[m_enArmorType].rect.top), &rc);
 	}
 
+	//Move X forward by the width of the armor icon
 	x += (m_hEmpty[m_enArmorType].rect.Width());
-	x += 5; // 5 pixels κενό ανάμεσα στο εικονίδιο της ασπίδας και τον αριθμό
+
+	//Add a small 5-pixel gap between the armor icon and its numbers
+	x += 5;
 	
-	// Ζωγραφίζουμε το νούμερο συμπαγώς από αριστερά προς τα δεξιά
+	//Draw the armor value compactly aligned to the left
 	DrawUtils::DrawHudNumberLeft(x, y, m_iBat, r, g, b);
 
 	return 1;

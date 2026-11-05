@@ -10,6 +10,7 @@
 #include "cl_entity.h"
 #include "triangleapi.h"
 #include "hltv.h"
+#include <stdio.h>
 
 #include "pm_shared.h"
 #include "pm_defs.h"
@@ -37,6 +38,9 @@ extern int		iJumpSpectator;
 extern float	vJumpOrigin[3];
 extern float	vJumpAngles[3];
 
+extern "C" void CS16VGUI2_BeginHudTextFrame(void);
+extern "C" void CS16VGUI2_DrawHudRect(int x, int y, int wide, int tall, int r, int g, int b, int a);
+extern "C" int CS16VGUI2_DrawHudString(int x, int y, const char* text, int r, int g, int b, int a);
 
 extern void V_GetInEyePos(int entity, float* origin, float* angles);
 extern void V_ResetChaseCam();
@@ -449,11 +453,6 @@ int CHudSpectator::VidInit()
 	return 1;
 }
 
-//-----------------------------------------------------------------------------
-// Purpose: 
-// Input  : flTime - 
-//			intermission - 
-//-----------------------------------------------------------------------------
 int CHudSpectator::Draw(float flTime)
 {
 	int lx;
@@ -464,6 +463,189 @@ int CHudSpectator::Draw(float flTime)
 	// draw only in spectator mode
 	if (!g_iUser1)
 		return 0;
+
+	int topBarHeight = 72;    
+	int bottomBarHeight = 40; 
+
+	//Variables for storing teams' names
+	char szCTName[64];
+	char szTName[64];
+	
+	//Taking teams' names from cstrike_english.txt
+	char* tempCT = CHudTextMessage::BufferedLocaliseTextString("#Cstrike_ScoreBoard_CT");
+	snprintf(szCTName, sizeof(szCTName), "%s", tempCT ? tempCT : "Counter-Terrorists");
+
+	char* tempT = CHudTextMessage::BufferedLocaliseTextString("#Cstrike_ScoreBoard_Ter");
+	snprintf(szTName, sizeof(szTName), "%s", tempT ? tempT : "Terrorists");
+
+	//Reading Data
+	int t_score = g_TeamInfo[1].frags;
+	int ct_score = g_TeamInfo[2].frags;
+	
+	int money = 0;
+	if (gHUD.cscl_currentmoney)
+		money = (int)gHUD.cscl_currentmoney->value;
+
+	int time_left = gHUD.m_Timer.GetRemainingTime(gHUD.m_flTime);
+
+	//Showing Teams' names, player's money and round time
+	char szCTScore[64], szTScore[64], szMoney[64], szTime[64];
+	snprintf(szCTScore, sizeof(szCTScore), "%s : %d", szCTName, ct_score); //Counter-Terrorists
+	snprintf(szTScore, sizeof(szTScore), "%s : %d", szTName, t_score); //Terrorists
+	snprintf(szMoney, sizeof(szMoney), "$%d", money); //Money
+	snprintf(szTime, sizeof(szTime), "  %d:%02d", time_left / 60, time_left % 60); //Round Time left
+
+	//Calculate dynamic width for right-aligned elements
+	int timeWidth = DrawUtils::ConsoleStringLen(szTime);
+	
+	//Calculate dynamic width for team names to right-align them
+	int ctNameWidth = DrawUtils::ConsoleStringLen(szCTName);
+	int tNameWidth = DrawUtils::ConsoleStringLen(szTName);
+
+	//Define anchors for perfect alignment matching Condition Zero
+	int rightX = ScreenWidth - 102;       //Vertical divider line
+	int teamNameEndX = rightX - 44;       //Brought much closer to the colon
+	int scoreStartX = rightX - 40;        //Fixed position for the score (leaves room for 3 digits)
+	
+	//Anchor for Money, left aligned next to the line
+	int moneyStartX = rightX + 14;         
+	
+	//Anchor for Time, right aligned 
+	//We calculate the maximum possible width of money ("$16000") to align the time's last digit with it.
+	int maxMoneyWidth = DrawUtils::ConsoleStringLen("$16000");
+	int timeEndX = moneyStartX + maxMoneyWidth; 
+	
+	//Vertical coordinates, shifted "up" to center perfectly within the vertical line
+	int topY = 24; 
+	int bottomY = 42;
+
+	//Draw background bars using pTriAPI
+	gEngfuncs.pTriAPI->RenderMode(kRenderTransColor);
+	gEngfuncs.pTriAPI->CullFace(TRI_NONE);
+	
+	//Top black bar
+	gEngfuncs.pTriAPI->Color4ub(0, 0, 0, 180);
+	gEngfuncs.pTriAPI->Begin(TRI_QUADS);
+	gEngfuncs.pTriAPI->Vertex3f(0, 0, 0);
+	gEngfuncs.pTriAPI->Vertex3f(ScreenWidth, 0, 0);
+	gEngfuncs.pTriAPI->Vertex3f(ScreenWidth, topBarHeight, 0);
+	gEngfuncs.pTriAPI->Vertex3f(0, topBarHeight, 0);
+	gEngfuncs.pTriAPI->End();
+
+	//Bottom black bar
+	gEngfuncs.pTriAPI->Begin(TRI_QUADS);
+	gEngfuncs.pTriAPI->Vertex3f(0, ScreenHeight - bottomBarHeight, 0);
+	gEngfuncs.pTriAPI->Vertex3f(ScreenWidth, ScreenHeight - bottomBarHeight, 0);
+	gEngfuncs.pTriAPI->Vertex3f(ScreenWidth, ScreenHeight, 0);
+	gEngfuncs.pTriAPI->Vertex3f(0, ScreenHeight, 0);
+	gEngfuncs.pTriAPI->End();
+
+	//Orange vertical divider line using FillRGBA (X = rightX, Y = 19, Width = 2, Height = 47)
+	gEngfuncs.pfnFillRGBA(rightX, 19, 2, 47, 255, 176, 0, 180);
+
+	
+	//Print the HUD texts (Score, Money, Time)
+	
+	//Counter-Terrorists
+	//Print "Counter-Terrorists", right-aligned, closer to the score
+	DrawUtils::SetConsoleTextColor((unsigned char)255, (unsigned char)176, (unsigned char)0);
+	DrawUtils::DrawConsoleString(teamNameEndX - ctNameWidth, topY, szCTName);
+
+	//Format and print Counter-Terrorist score 
+	char szCTScoreOnly[16];
+	snprintf(szCTScoreOnly, sizeof(szCTScoreOnly), ": %d", ct_score);
+	
+	DrawUtils::SetConsoleTextColor((unsigned char)255, (unsigned char)176, (unsigned char)0);
+	DrawUtils::DrawConsoleString(scoreStartX, topY, szCTScoreOnly);
+	
+	//Terrorists
+	//Print "Terrorists", right-aligned, closer to the score
+	DrawUtils::SetConsoleTextColor((unsigned char)255, (unsigned char)176, (unsigned char)0);
+	DrawUtils::DrawConsoleString(teamNameEndX - tNameWidth, bottomY, szTName); 
+	
+	//Format and print Terrorist score
+	char szTScoreOnly[16];
+	snprintf(szTScoreOnly, sizeof(szTScoreOnly), ": %d", t_score);
+
+	DrawUtils::SetConsoleTextColor((unsigned char)255, (unsigned char)176, (unsigned char)0);
+	DrawUtils::DrawConsoleString(scoreStartX, bottomY, szTScoreOnly);
+	
+	//Print Money, left-aligned relative to the vertical line
+	DrawUtils::SetConsoleTextColor((unsigned char)255, (unsigned char)176, (unsigned char)0);
+	DrawUtils::DrawConsoleString(moneyStartX, topY, szMoney); 
+	
+	//Print Time, right-aligned to the maximum width of the money string
+	DrawUtils::SetConsoleTextColor((unsigned char)255, (unsigned char)176, (unsigned char)0);
+	DrawUtils::DrawConsoleString(timeEndX - timeWidth, bottomY, szTime);
+
+	//Show players' names and hp for spectators
+	if (g_iUser2 > 0 && g_iUser2 <= MAX_PLAYERS)
+	{
+		char* playerName = g_PlayerInfoList[g_iUser2].name;
+		if (playerName && playerName[0])
+		{
+			int team = g_PlayerExtraInfo[g_iUser2].teamnumber;
+
+			//LIVE HP FIX: Declaring custom table from health.cpp
+			extern int g_LivePlayerHealth[33];
+			int hp = g_LivePlayerHealth[g_iUser2];
+
+			//Safe Fallback:if the table is 0 (e.g first camera change), then
+			//take the value from Scoreboard so it won't be empty or show 0
+			if (hp <= 0)
+			{
+				hp = g_PlayerExtraInfo[g_iUser2].sb_health;
+			}
+			//if player is alive, but server locked Scoreboard at 100,
+			//then check if the engine has sent value via HUD m_iHealth
+			if (hp == 100 && g_iUser2 == gEngfuncs.GetLocalPlayer()->index)
+			{
+				hp = gHUD.m_Health.m_iHealth;
+			}
+
+			//If player is dead, then set HP to 0, so parenthesis can be removed
+			if (g_PlayerExtraInfo[g_iUser2].dead)
+			{
+				hp = 0;
+			}
+
+			bool isDead = g_PlayerExtraInfo[g_iUser2].dead;
+
+			//Teams' names colors
+			int r = 204, g_col = 204, b = 204; //Spectaror color
+			
+			if (team == 1) //Terrorist (Red)
+			{
+				r = 255; g_col = 63; b = 63;
+			}
+			else if (team == 2) // Counter-Terrorists (Blue)
+			{
+				r = 153; g_col = 204; b = 255;
+			}
+
+			char szPlayerText[128];
+			
+			//If player is alive, then print Name (HP)
+			if (!isDead && hp >= 0)
+			{
+				snprintf(szPlayerText, sizeof(szPlayerText), "%s (%d)", playerName, hp);
+			}
+			//If player is dead, then print only Name, no zeroes and no parenthesis
+			else
+			{
+				snprintf(szPlayerText, sizeof(szPlayerText), "%s", playerName);
+			}
+
+			DrawUtils::SetConsoleTextColor((unsigned char)r, (unsigned char)g_col, (unsigned char)b);
+			DrawUtils::DrawConsoleString(ScreenWidth / 2 - (DrawUtils::ConsoleStringLen(szPlayerText) / 2), ScreenHeight - (bottomBarHeight / 2) - 6, szPlayerText);
+		}
+	}
+
+	// Ενημερώνουμε το VGUI Spectator Panel σε ΚΑΘΕ καρέ!
+	if (gViewPort)
+	{
+		gViewPort->UpdateSpectatorPanel();
+	}	
 
 	if (m_lastAutoDirector != m_autoDirector->value)
 	{
@@ -559,11 +741,6 @@ int CHudSpectator::Draw(float flTime)
 
 	if (m_iDrawCycle == 1 && m_pip->value < INSET_MAP_FREE)
 		return 1;
-
-	// ΒΑΛΕ ΑΥΤΟ ΕΔΩ:
-	if (gViewPort) {
-	    gViewPort->UpdateSpectatorPanel();
-	}
 
 	return 1;
 }
