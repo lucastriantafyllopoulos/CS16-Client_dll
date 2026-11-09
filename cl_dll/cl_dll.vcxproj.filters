@@ -1,0 +1,629 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\cl_dll">
+      <UniqueIdentifier>{a71778ab-2f87-40d7-a2d1-77874279e4c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cl_dll\events">
+      <UniqueIdentifier>{9105826d-b1c3-428b-913c-b98cc6522908}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{b25a3b0d-a19b-4e57-ab81-83ba6b77dd9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\game_shared">
+      <UniqueIdentifier>{bcf5be68-0ed6-447e-b73a-04dbee2b3e11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\pm_shared">
+      <UniqueIdentifier>{b2616a6f-0a0b-4980-b85b-de25fa6cc6d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\public">
+      <UniqueIdentifier>{749032c4-7756-4c68-a6b7-cae9b8d942a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\cs_wpn">
+      <UniqueIdentifier>{5f697074-131c-434b-aa5f-bd80e5ac1a5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\wpn_shared">
+      <UniqueIdentifier>{730cc526-7232-4a0d-8270-f56e8b97a7e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ui">
+      <UniqueIdentifier>{97e6da0b-c175-4f09-b5c7-dd2e32942962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ui\common">
+      <UniqueIdentifier>{c7cfdad2-05af-44fb-a2eb-5805355d7392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ui\vgui1">
+      <UniqueIdentifier>{5f1242ce-aabb-43fa-9c2e-4e1627cbd550}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ui\vgui2">
+      <UniqueIdentifier>{5a666464-c76c-41a7-8ab6-bccf63e673eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Files\cl_dll">
+      <UniqueIdentifier>{024add53-81f7-4e4c-87eb-4d7e094306a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{697d6dc5-5bd9-49ba-812b-6bc9452dd399}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\game_shared">
+      <UniqueIdentifier>{64de1d0a-ca1f-4df1-907e-04e2c081a831}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\pm_shared">
+      <UniqueIdentifier>{f135175e-5cb0-4577-b7d8-a268dc513f75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ui">
+      <UniqueIdentifier>{fbfa7100-4e77-46cf-bec4-7688f404f316}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ui\common">
+      <UniqueIdentifier>{f22d9708-132d-40e6-a404-79ae852683be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ui\vgui1">
+      <UniqueIdentifier>{377c7280-a06b-4879-9cb8-a44bb36bf694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ui\vgui2">
+      <UniqueIdentifier>{4b09e666-a48d-4bb6-825e-ab0a0ce004ef}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="view.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="ammo.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="ammo_secondary.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="ammohistory.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="battery.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="cdll_int.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\common\cs_localize.cpp">
+      <Filter>Source Files\ui\common</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\common\hud_style.cpp">
+      <Filter>Source Files\ui\common</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\vgui1\cs_vgui_bridge.cpp">
+      <Filter>Source Files\ui\vgui1</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\vgui2\cs_vgui2.cpp">
+      <Filter>Source Files\ui\vgui2</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\vgui2\cs_vgui2_client.cpp">
+      <Filter>Source Files\ui\vgui2</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\vgui1\cs_vgui_viewport.cpp">
+      <Filter>Source Files\ui\vgui1</Filter>
+    </ClCompile>
+    <ClCompile Include="com_weapons.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="death.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="demo.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="entity.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="ev_common.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="events.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="flashlight.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStudioModelRenderer.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="geiger.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="health.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud_msg.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud_redraw.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud_servers.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud_spectator.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud_update.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="in_camera.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="inputw32.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="interpolation.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="message.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="saytext.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="status_icons.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="statusbar.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="studio_util.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="StudioModelRenderer.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="text_message.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="train.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="tri.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\parsemsg.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\game_shared\voice_banmgr.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\game_shared\vgui_loadtga.cpp">
+      <Filter>Source Files\game_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\public\interface.cpp">
+      <Filter>Source Files\public</Filter>
+    </ClCompile>
+    <ClCompile Include="cs_wpn\cs_weapons.cpp">
+      <Filter>Source Files\cs_wpn</Filter>
+    </ClCompile>
+    <ClCompile Include="radar.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="events\ev_cs16.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_ak47.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_aug.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_awp.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_createexplo.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_createsmoke.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_czerods.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_deagle.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_decal_reset.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_elite.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_famas.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_fiveseven.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_g3sg1.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_galil.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_glock18.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_knife.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_m3.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_m4a1.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_m249.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_mac10.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_mp5n.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_p90.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_p228.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_scout.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_sg550.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_sg552.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_tmp.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_ump45.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_usp.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_vehicle.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="events\event_xm1014.cpp">
+      <Filter>Source Files\cl_dll\events</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_ak47.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_aug.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_awp.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_c4.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_deagle.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_elite.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_famas.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_fiveseven.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_flashbang.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_g3sg1.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_galil.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_glock18.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_hegrenade.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_knife.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_m3.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_m4a1.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_m249.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_mac10.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_mp5navy.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_p90.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_p228.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_scout.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_sg550.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_sg552.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_smokegrenade.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_tmp.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_ump45.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_usp.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\dlls\wpn_shared\wpn_xm1014.cpp">
+      <Filter>Source Files\wpn_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pm_shared\pm_debug.cpp">
+      <Filter>Source Files\pm_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pm_shared\pm_math.cpp">
+      <Filter>Source Files\pm_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\pm_shared\pm_shared.cpp">
+      <Filter>Source Files\pm_shared</Filter>
+    </ClCompile>
+    <ClCompile Include="hud\radio.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud\scenario.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud\scoreboard.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud\sniperscope.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud\timer.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud\money.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud\MOTD.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="hud\nvg.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="nightvision.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="rain.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\common\draw_util.cpp">
+      <Filter>Source Files\ui\common</Filter>
+    </ClCompile>
+    <ClCompile Include="voice_status.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_SpectatorPanel.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_TeamFortressViewport.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_CustomObjects.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_int.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_SchemeManager.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+    <ClCompile Include="vgui_MOTDWindow.cpp">
+      <Filter>Source Files\cl_dll</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ammo.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="ammohistory.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="cl_dll.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\vgui1\cs_vgui.h">
+      <Filter>Header Files\ui\vgui1</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\vgui2\cs_vgui2.h">
+      <Filter>Header Files\ui\vgui2</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\vgui2\cs_vgui2_client.h">
+      <Filter>Header Files\ui\vgui2</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\common\cs_localize.h">
+      <Filter>Header Files\ui\common</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\common\hud_style.h">
+      <Filter>Header Files\ui\common</Filter>
+    </ClInclude>
+    <ClInclude Include="com_weapons.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="demo.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="ev_hldm.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="eventscripts.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStudioModelRenderer.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="health.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="hud.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="hud_servers.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="hud_servers_priv.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="hud_spectator.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="in_defs.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="interpolation.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="kbutton.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="StudioModelRenderer.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="tri.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="view.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="wrect.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\parsemsg.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\game_shared\voice_banmgr.h">
+      <Filter>Header Files\game_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\game_shared\vgui_scrollbar2.h">
+      <Filter>Header Files\game_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\game_shared\vgui_slider2.h">
+      <Filter>Header Files\game_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\common\draw_util.h">
+      <Filter>Header Files\ui\common</Filter>
+    </ClInclude>
+    <ClInclude Include="rain.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="csprite.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="radar.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="events.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="util_vector.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="Exports.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pm_shared\pm_debug.h">
+      <Filter>Header Files\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pm_shared\pm_defs.h">
+      <Filter>Header Files\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pm_shared\pm_info.h">
+      <Filter>Header Files\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pm_shared\pm_materials.h">
+      <Filter>Header Files\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pm_shared\pm_math.h">
+      <Filter>Header Files\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pm_shared\pm_movevars.h">
+      <Filter>Header Files\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\pm_shared\pm_shared.h">
+      <Filter>Header Files\pm_shared</Filter>
+    </ClInclude>
+    <ClInclude Include="voice_status.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="vgui_SpectatorPanel.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="vgui_TeamFortressViewport.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="vgui_ConsolePanel.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="vgui_ControlConfigPanel.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="vgui_int.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="vgui_SchemeManager.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="vgui_ScorePanel.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="vgui_ServerBrowser.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+    <ClInclude Include="global_consts.h">
+      <Filter>Header Files\cl_dll</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
