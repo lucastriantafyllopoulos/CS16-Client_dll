@@ -1,0 +1,86 @@
+# VS solution metadata
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# IDEs
+.vscode/
+.idea/
+
+# Codex local workspace and upload artifacts
+.codex*
+steam_appid.txt
+
+# Build trees (any folder named build, bin, obj, out, x64, x86, etc.)
+**/[Bb]uild*/
+**/[Bb]in*/
+**/[Oo]bj*/
+**/[Oo]ut*/
+**/x64/
+**/x86/
+**/ARM*/
+**/Win32/
+
+# Any Debug/Release anywhere (and variants like ReleaseWithDebInfo)
+**/[Dd]ebug*/
+**/[Rr]elease*/
+**/[Rr]elWithDebInfo*/
+**/[Mm]in[Ss]ize[Rr]el*/
+
+# MSVC intermediates
+*.idb
+*.pdb
+*.ilk
+*.ipch
+*.pch
+*.tlog
+*.log
+*.opendb
+*.VC.db
+*.VC.VC.opendb
+
+# Compiled objects and libs
+*.obj
+*.o
+*.lo
+*.slo
+*.a
+*.dll
+*.so
+*.dylib
+*.exe
+*.out
+*.app
+
+# Static/Fortran
+*.la
+*.lai
+*.mod
+*.smod
+
+# PGO/coverage
+*.pgc
+*.pgd
+*.pgo
+*.gcno
+*.gcda
+*.dwo
+
+# Ninja / CMake
+.build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+compile_commands.json
+build.ninja
+*.ninja
+*.dir/
+
+# HLSDK generated
+*.d
