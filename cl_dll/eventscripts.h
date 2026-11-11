@@ -131,9 +131,19 @@ EV_EjectBrass
 Bullet shell casings
 =================
 */
+
+// Η παλιά συνάρτηση παραμένει, για να μην χτυπήσουν error τα άλλα όπλα που δεν έχεις αλλάξει
 inline void EV_EjectBrass( float *origin, float *velocity, float rotation, int model, int soundtype, float life = 2.5f )
 {
-	Vector angles(0.0f, 0.0f, rotation);
+	//Vector angles(0.0f, 0.0f, rotation);
+	// Μεταφέραμε το rotation στη 2η θέση για να εφαρμόζεται στο Yaw αντί για το Roll
+	Vector angles(0.0f, rotation, 0.0f);
+	gEngfuncs.pEfxAPI->R_TempModel( origin, velocity, angles, life, model, soundtype );
+}
+
+// Η ΝΕΑ συνάρτηση που δέχεται όλες τις γωνίες του παίκτη (Pitch, Yaw, Roll)
+inline void EV_EjectBrass( float *origin, float *velocity, Vector angles, int model, int soundtype, float life = 2.5f )
+{
 	gEngfuncs.pEfxAPI->R_TempModel( origin, velocity, angles, life, model, soundtype );
 }
 

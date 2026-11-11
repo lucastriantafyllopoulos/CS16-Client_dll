@@ -141,9 +141,13 @@ void EV_GetDefaultShellInfo(event_args_t* args, float* origin, float* velocity, 
 	int idx = args->entindex;
 
 	// Κρατάμε τη λογική της ταχύτητας του κάλυκα (προς τα πού θα πεταχτεί)
-	float fR = gEngfuncs.pfnRandomFloat(50, 70);
-	float fU = gEngfuncs.pfnRandomFloat(75, 175);
-	float fF = gEngfuncs.pfnRandomFloat(25, 250);
+	//float fR = gEngfuncs.pfnRandomFloat(50, 70);
+	//float fU = gEngfuncs.pfnRandomFloat(75, 175);
+	//float fF = gEngfuncs.pfnRandomFloat(25, 250);
+
+	float fR = gEngfuncs.pfnRandomFloat(20, 100);
+	float fU = gEngfuncs.pfnRandomFloat(50, 110); // Μειώσαμε το μέγιστο ύψος
+	float fF = gEngfuncs.pfnRandomFloat(50, 70);  // Μειώσαμε την μπροστινή ώθηση
 	float fDirection = rightScale > 0.0f ? -1.0f : 1.0f;
 
 	for (int i = 0; i < 3; i++)
