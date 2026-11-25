@@ -10,7 +10,7 @@ static const char *SOUNDS_NAME[] =
 void EV_FireMP5(event_args_t *args)
 {
 	vec3_t ShellVelocity, ShellOrigin;
-	Vector vecSrc, vecAiming;
+	Vector vecSrc;
 
 	int idx = args->entindex;
 	Vector origin(args->origin);
@@ -27,13 +27,13 @@ void EV_FireMP5(event_args_t *args)
 
 	AngleVectors(angles, forward, right, up);
 
-	if (EV_IsLocal(idx))
+	if(EV_IsLocal(idx))
 	{
 		++g_iShotsFired;
 		EV_MuzzleFlash();
 
 		//Play a random shoot animation MP5N_SHOOT1, MP5N_SHOOT2, or MP5N_SHOOT3 from enumeration structure mp5n_e in wpn_shared.h
-		gEngfuncs.pEventAPI->EV_WeaponAnimation((MP5N_SHOOT1, MP5N_SHOOT3), 2);
+		gEngfuncs.pEventAPI->EV_WeaponAnimation(Com_RandomLong(MP5N_SHOOT1, MP5N_SHOOT3), 2);
 
 		if(!gHUD.cl_righthand->value)
 		{
@@ -77,8 +77,7 @@ void EV_FireMP5(event_args_t *args)
 	PLAY_EVENT_SOUND(SOUNDS_NAME[Com_RandomLong(0, 1)]);
 
 	EV_GetGunPosition(args, vecSrc, origin);
-	VectorCopy(forward, vecAiming);
 
 	Vector vSpread(args->fparam1, args->fparam2, 0.0f);
-	EV_HLDM_FireBullets(idx, forward, right, up, 1, vecSrc, vecAiming, vSpread, 8192.0,BULLET_PLAYER_9MM, 2);
+	EV_HLDM_FireBullets(idx, forward, right, up, 1, vecSrc, forward, vSpread, 8192.0,BULLET_PLAYER_9MM, 2);
 }
